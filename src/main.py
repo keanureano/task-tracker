@@ -35,7 +35,7 @@ def list(args):
             if not tasks:
                 continue
             for task in tasks:
-                print(f"[{status}]", task["description"])
+                print(f"[{task['status']}] {task['id']}: {task['description']}")
         sys.exit(0)
 
     status = args[0]
@@ -46,7 +46,7 @@ def list(args):
         sys.exit(1)
 
     for task in categorized_tasks[status]:
-        print(f"[{status}]", task["description"])
+        print(f"[{task['status']}] {task['id']}: {task['description']}")
 
 
 def update(args):
@@ -73,6 +73,38 @@ def update(args):
 
     tasks = db.write(tasks)
     print(f"Task updated successfully (ID: {task_id})")
+
+
+def mark(args):
+    if len(args) < 1:
+        print("Usage: task-cli mark-<status> <id>")
+        sys.exit(1)
+
+    try:
+        task_status = args[0].split("mark-")[1]
+        if not task_status:
+            raise IndexError
+    except IndexError:
+        print("Usage: task-cli mark-<status> <id>")
+        sys.exit(1)
+
+    task_id = int(args[1])
+    tasks = db.get_all()
+    is_task_found = False
+
+    for task in tasks:
+        if task["id"] == task_id:
+            task["status"] = task_status
+            task["updatedAt"] = datetime.now().isoformat()
+            is_task_found = True
+            break
+
+    if not is_task_found:
+        print(f"Task not found (ID: {task_id})")
+        sys.exit(1)
+
+    tasks = db.write(tasks)
+    print(f"Task marked as {task_status} successfully (ID: {task_id})")
 
 
 def delete(args):
@@ -116,6 +148,8 @@ def main():
             update(args)
         case "delete":
             delete(args)
+        case cmd if cmd.startswith("mark"):
+            mark([cmd, *args])
         case _:
             print(f"Unknown command: {command}")
             print("Usage: task-cli <command> [options]")

@@ -20,4 +20,4 @@ def get_all():
 
 def write(tasks):
     with open(DATABASE, "w") as file:
-        json.dump(tasks, file)
+        json.dump(tasks, file, indent=2)

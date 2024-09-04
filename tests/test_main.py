@@ -43,17 +43,21 @@ def test_add():
     assert result.returncode == 1
     assert "Usage: task-cli add <description>" in result.stdout
 
-    result = run_cli(["add", '"Buy groceries"'])
+    result = run_cli(["add", "Buy groceries"])
     assert result.returncode == 0
     assert "Task added successfully (ID: 1)" in result.stdout
 
-    result = run_cli(["add", '"Go to the gym"'])
+    result = run_cli(["add", "Go to the gym"])
     assert result.returncode == 0
     assert "Task added successfully (ID: 2)" in result.stdout
 
-    result = run_cli(["add", '"Clean the house"'])
+    result = run_cli(["add", "Clean the house"])
     assert result.returncode == 0
     assert "Task added successfully (ID: 3)" in result.stdout
+
+    result = run_cli(["add", "Cook dinner"])
+    assert result.returncode == 0
+    assert "Task added successfully (ID: 4)" in result.stdout
 
 
 def test_update():
@@ -62,7 +66,7 @@ def test_update():
     assert result.returncode == 1
     assert "Usage: task-cli update <id> <description>" in result.stdout
 
-    result = run_cli(["update", "99", '"Foo"'])
+    result = run_cli(["update", "99", "Foo"])
     assert result.returncode == 1
     assert "Task not found (ID: 99)" in result.stdout
 
@@ -70,7 +74,7 @@ def test_update():
     assert result.returncode == 1
     assert "Usage: task-cli update <id> <description>" in result.stdout
 
-    result = run_cli(["update", "1", '"Buy groceries and cook dinner"'])
+    result = run_cli(["update", "1", "Buy groceries and cook dinner"])
     assert result.returncode == 0
     assert "Task updated successfully (ID: 1)" in result.stdout
 
@@ -85,13 +89,36 @@ def test_delete():
     assert result.returncode == 1
     assert "Task not found (ID: 99)" in result.stdout
 
-    result = run_cli(["delete", "3"])
+    result = run_cli(["delete", "4"])
     assert result.returncode == 0
-    assert "Task deleted successfully (ID: 3)" in result.stdout
+    assert "Task deleted successfully (ID: 4)" in result.stdout
 
 
 def test_mark():
-    pass
+    """Test the mark command"""
+    result = run_cli(["mark"])
+    assert result.returncode == 1
+    assert "Usage: task-cli mark-<status> <id>" in result.stdout
+
+    result = run_cli(["mark-"])
+    assert result.returncode == 1
+    assert "Usage: task-cli mark-<status> <id>" in result.stdout
+
+    result = run_cli(["mark-foo", "99"])
+    assert result.returncode == 1
+    assert "Task not found (ID: 99)" in result.stdout
+
+    result = run_cli(["mark-done", "1"])
+    assert result.returncode == 0
+    assert "Task marked as done successfully (ID: 1)" in result.stdout
+
+    result = run_cli(["mark-todo", "2"])
+    assert result.returncode == 0
+    assert "Task marked as todo successfully (ID: 2)" in result.stdout
+
+    result = run_cli(["mark-in-progress", "3"])
+    assert result.returncode == 0
+    assert "Task marked as in-progress successfully (ID: 3)" in result.stdout
 
 
 def test_list():
@@ -103,11 +130,21 @@ def test_list():
 
     result = run_cli(["list"])
     assert result.returncode == 0
-    assert "Buy groceries" in result.stdout
+    assert "[done] 1: Buy groceries and cook dinner" in result.stdout
+    assert "[todo] 2: Go to the gym" in result.stdout
+    assert "[in-progress] 3: Clean the house" in result.stdout
+
+    result = run_cli(["list", "done"])
+    assert result.returncode == 0
+    assert "[done] 1: Buy groceries and cook dinner" in result.stdout
+
+    result = run_cli(["list", "in-progress"])
+    assert result.returncode == 0
+    assert "[in-progress] 3: Clean the house" in result.stdout
 
     result = run_cli(["list", "todo"])
     assert result.returncode == 0
-    assert "Go to the gym" in result.stdout
+    assert "[todo] 2: Go to the gym" in result.stdout
 
 
 def main():
