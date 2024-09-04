@@ -18,6 +18,6 @@ def get_all():
         return json.load(file)
 
 
-def add(tasks):
+def write(tasks):
     with open(DATABASE, "w") as file:
         json.dump(tasks, file)

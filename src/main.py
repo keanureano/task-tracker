@@ -19,7 +19,7 @@ def add(args):
     }
 
     tasks.append(new_task)
-    tasks = db.add(tasks)
+    tasks = db.write(tasks)
     print(f"Task added successfully (ID: {new_task['id']})")
 
 
@@ -42,10 +42,37 @@ def list(args):
 
     if status not in categorized_tasks:
         print(f"Unknown status: {status}")
+        print("Usage: task-cli list <status>")
         sys.exit(1)
 
     for task in categorized_tasks[status]:
         print(f"[{status}]", task["description"])
+
+
+def update(args):
+    if len(args) < 2:
+        print("Usage: task-cli update <id> <description>")
+        sys.exit(1)
+
+    task_id = int(args[0])
+    task_description = args[1]
+    tasks = db.get_all()
+
+    is_task_found = False
+
+    for task in tasks:
+        if task["id"] == task_id:
+            task["description"] = task_description
+            task["updatedAt"] = datetime.now().isoformat()
+            is_task_found = True
+            break
+
+    if not is_task_found:
+        print(f"Task not found (ID: {task_id})")
+        sys.exit(1)
+
+    tasks = db.write(tasks)
+    print(f"Task updated successfully (ID: {task_id})")
 
 
 def main():
@@ -61,8 +88,11 @@ def main():
             add(args)
         case "list":
             list(args)
+        case "update":
+            update(args)
         case _:
             print(f"Unknown command: {command}")
+            print("Usage: task-cli <command> [options]")
             sys.exit(1)
 
 

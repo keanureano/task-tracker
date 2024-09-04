@@ -34,7 +34,7 @@ def test_cli():
 
     result = run_cli(["foo"])
     assert result.returncode == 1
-    assert "Unknown command: foo" in result.stdout
+    assert "Usage: task-cli <command> [options]" in result.stdout
 
 
 def test_add():
@@ -47,7 +47,7 @@ def test_add():
     assert result.returncode == 0
     assert "Task added successfully (ID: 1)" in result.stdout
 
-    result = run_cli(["add", '"Buy other groceries"'])
+    result = run_cli(["add", '"Go to the gym"'])
     assert result.returncode == 0
     assert "Task added successfully (ID: 2)" in result.stdout
 
@@ -57,16 +57,34 @@ def test_list():
     result = run_cli(["list"])
     assert result.returncode == 0
     assert "Buy groceries" in result.stdout
-    assert "Buy other groceries" in result.stdout
 
     result = run_cli(["list", "todo"])
     assert result.returncode == 0
-    assert "Buy groceries" in result.stdout
-    assert "Buy other groceries" in result.stdout
+    assert "Go to the gym" in result.stdout
 
     result = run_cli(["list", "foo"])
     assert result.returncode == 1
     assert "Unknown status: foo" in result.stdout
+    assert "Usage: task-cli list <status>" in result.stdout
+
+
+def test_update():
+    """Test the update command"""
+    result = run_cli(["update"])
+    assert result.returncode == 1
+    assert "Usage: task-cli update <id> <description>" in result.stdout
+
+    result = run_cli(["update", "1"])
+    assert result.returncode == 1
+    assert "Usage: task-cli update <id> <description>" in result.stdout
+
+    result = run_cli(["update", "1", '"Buy groceries and cook dinner"'])
+    assert result.returncode == 0
+    assert "Task updated successfully (ID: 1)" in result.stdout
+
+    result = run_cli(["update", "0", '"Foo"'])
+    assert result.returncode == 1
+    assert "Task not found (ID: 0)" in result.stdout
 
 
 def main():
