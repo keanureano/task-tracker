@@ -51,21 +51,9 @@ def test_add():
     assert result.returncode == 0
     assert "Task added successfully (ID: 2)" in result.stdout
 
-
-def test_list():
-    """Test the list command"""
-    result = run_cli(["list"])
+    result = run_cli(["add", '"Clean the house"'])
     assert result.returncode == 0
-    assert "Buy groceries" in result.stdout
-
-    result = run_cli(["list", "todo"])
-    assert result.returncode == 0
-    assert "Go to the gym" in result.stdout
-
-    result = run_cli(["list", "foo"])
-    assert result.returncode == 1
-    assert "Unknown status: foo" in result.stdout
-    assert "Usage: task-cli list <status>" in result.stdout
+    assert "Task added successfully (ID: 3)" in result.stdout
 
 
 def test_update():
@@ -73,6 +61,10 @@ def test_update():
     result = run_cli(["update"])
     assert result.returncode == 1
     assert "Usage: task-cli update <id> <description>" in result.stdout
+
+    result = run_cli(["update", "99", '"Foo"'])
+    assert result.returncode == 1
+    assert "Task not found (ID: 99)" in result.stdout
 
     result = run_cli(["update", "1"])
     assert result.returncode == 1
@@ -82,9 +74,40 @@ def test_update():
     assert result.returncode == 0
     assert "Task updated successfully (ID: 1)" in result.stdout
 
-    result = run_cli(["update", "0", '"Foo"'])
+
+def test_delete():
+    """Test the delete command"""
+    result = run_cli(["delete"])
     assert result.returncode == 1
-    assert "Task not found (ID: 0)" in result.stdout
+    assert "Usage: task-cli delete <id>" in result.stdout
+
+    result = run_cli(["delete", "99"])
+    assert result.returncode == 1
+    assert "Task not found (ID: 99)" in result.stdout
+
+    result = run_cli(["delete", "3"])
+    assert result.returncode == 0
+    assert "Task deleted successfully (ID: 3)" in result.stdout
+
+
+def test_mark():
+    pass
+
+
+def test_list():
+    """Test the list command"""
+    result = run_cli(["list", "foo"])
+    assert result.returncode == 1
+    assert "Unknown status: foo" in result.stdout
+    assert "Usage: task-cli list <status>" in result.stdout
+
+    result = run_cli(["list"])
+    assert result.returncode == 0
+    assert "Buy groceries" in result.stdout
+
+    result = run_cli(["list", "todo"])
+    assert result.returncode == 0
+    assert "Go to the gym" in result.stdout
 
 
 def main():

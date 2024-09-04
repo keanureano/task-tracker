@@ -75,6 +75,30 @@ def update(args):
     print(f"Task updated successfully (ID: {task_id})")
 
 
+def delete(args):
+    if len(args) < 1:
+        print("Usage: task-cli delete <id>")
+        sys.exit(1)
+
+    task_id = int(args[0])
+    tasks = db.get_all()
+
+    is_task_found = False
+
+    for task in tasks:
+        if task["id"] == task_id:
+            tasks.remove(task)
+            is_task_found = True
+            break
+
+    if not is_task_found:
+        print(f"Task not found (ID: {task_id})")
+        sys.exit(1)
+
+    tasks = db.write(tasks)
+    print(f"Task deleted successfully (ID: {task_id})")
+
+
 def main():
     if len(sys.argv) < 2:
         print("Usage: task-cli <command> [options]")
@@ -90,6 +114,8 @@ def main():
             list(args)
         case "update":
             update(args)
+        case "delete":
+            delete(args)
         case _:
             print(f"Unknown command: {command}")
             print("Usage: task-cli <command> [options]")
