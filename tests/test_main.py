@@ -26,14 +26,18 @@ def run_cli(args):
     return result
 
 
-def test_cli_empty():
-    """Test the empty command"""
+def test_cli():
+    """Test the base cli commands"""
     result = run_cli([])
     assert result.returncode == 1
     assert "Usage: task-cli <command> [options]" in result.stdout
 
+    result = run_cli(["foo"])
+    assert result.returncode == 1
+    assert "Unknown command: foo" in result.stdout
 
-def test_cli_add():
+
+def test_add():
     """Test the add command"""
     result = run_cli(["add"])
     assert result.returncode == 1
@@ -48,10 +52,21 @@ def test_cli_add():
     assert "Task added successfully (ID: 2)" in result.stdout
 
 
-def test_cli_list():
+def test_list():
     """Test the list command"""
     result = run_cli(["list"])
     assert result.returncode == 0
+    assert "Buy groceries" in result.stdout
+    assert "Buy other groceries" in result.stdout
+
+    result = run_cli(["list", "todo"])
+    assert result.returncode == 0
+    assert "Buy groceries" in result.stdout
+    assert "Buy other groceries" in result.stdout
+
+    result = run_cli(["list", "foo"])
+    assert result.returncode == 1
+    assert "Unknown status: foo" in result.stdout
 
 
 def main():

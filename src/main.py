@@ -23,6 +23,31 @@ def add(args):
     print(f"Task added successfully (ID: {new_task['id']})")
 
 
+def list(args):
+    tasks = db.get_all()
+    categorized_tasks = {}
+
+    for task in tasks:
+        categorized_tasks.setdefault(task["status"], []).append(task)
+
+    if len(args) < 1:
+        for status, tasks in categorized_tasks.items():
+            if not tasks:
+                continue
+            for task in tasks:
+                print(f"[{status}]", task["description"])
+        sys.exit(0)
+
+    status = args[0]
+
+    if status not in categorized_tasks:
+        print(f"Unknown status: {status}")
+        sys.exit(1)
+
+    for task in categorized_tasks[status]:
+        print(f"[{status}]", task["description"])
+
+
 def main():
     if len(sys.argv) < 2:
         print("Usage: task-cli <command> [options]")
@@ -34,6 +59,11 @@ def main():
     match command:
         case "add":
             add(args)
+        case "list":
+            list(args)
+        case _:
+            print(f"Unknown command: {command}")
+            sys.exit(1)
 
 
 if __name__ == "__main__":

@@ -35,6 +35,12 @@ Run tests on file changes
 ptw
 ```
 
+Run tests with debugging enabled
+
+```bash
+ptw -- -s
+```
+
 ## Example Commands
 
 ```bash
