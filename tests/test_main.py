@@ -3,18 +3,20 @@ import pytest
 import subprocess
 
 
-@pytest.fixture(autouse=True)
-def set_test_env():
-    """Helper function to set test environment variables"""
-    os.environ["DATABASE"] = "test_database.json"
+@pytest.fixture(scope="session", autouse=True)
+def setup_env():
+    """Sets up the test environment"""
+    # Setup before the test
 
-    yield
-    # Cleanup
+    os.environ["DATABASE"] = "./tests/test_database.json"
     DATABASE = os.getenv("DATABASE")
 
     if os.path.exists(DATABASE):
         os.remove(DATABASE)
 
+    yield
+
+    # Clean up after the test
     del os.environ["DATABASE"]
 
 

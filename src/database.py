@@ -1,7 +1,7 @@
 import json
 import os
 
-DATABASE = os.getenv("DATABASE", "database.json")
+DATABASE = os.getenv("DATABASE", "./src/database.json")
 
 
 def __create_new_database():
