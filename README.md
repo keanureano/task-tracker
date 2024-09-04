@@ -47,6 +47,7 @@ ptw -- -s
 ```bash
 # Show all commands
 task-cli help
+
 # Adding a new task
 task-cli add "Buy groceries"
 # Output: Task added successfully (ID: 1)
