@@ -7,7 +7,6 @@ import subprocess
 def setup_env():
     """Sets up the test environment"""
     # Setup before the test
-
     os.environ["DATABASE"] = "./tests/test_database.json"
     DATABASE = os.getenv("DATABASE")
 
@@ -47,6 +46,12 @@ def test_cli_add():
     result = run_cli(["add", '"Buy other groceries"'])
     assert result.returncode == 0
     assert "Task added successfully (ID: 2)" in result.stdout
+
+
+def test_cli_list():
+    """Test the list command"""
+    result = run_cli(["list"])
+    assert result.returncode == 0
 
 
 def main():
