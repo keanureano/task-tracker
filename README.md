@@ -1,12 +1,13 @@
 # Task Tracker
 
+https://roadmap.sh/projects/task-tracker
+
 ## How to install
 
 Clone the repository
 
 ```bash
 git clone https://github.com/keanureano/task-tracker.git
-
 ```
 
 Install the program on pip
@@ -44,6 +45,8 @@ ptw -- -s
 ## Example Commands
 
 ```bash
+# Show all commands
+task-cli help
 # Adding a new task
 task-cli add "Buy groceries"
 # Output: Task added successfully (ID: 1)
