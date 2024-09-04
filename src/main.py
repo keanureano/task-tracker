@@ -2,6 +2,18 @@ import sys
 import database as db
 from datetime import datetime
 
+HELP_TEXT = """
+Usage: task-cli <command> [options]
+
+Commands:
+  add <description>              Add a new task
+  list [status]                  List all tasks or filter by status
+  update <id> <description>      Update a task's description
+  mark-<status> <id>             Mark a task as <status> (status: todo, in-progress, done)
+  delete <id>                    Delete a task
+  help                           Show this help message
+"""
+
 
 def add(args):
     if len(args) < 1:
@@ -131,6 +143,10 @@ def delete(args):
     print(f"Task deleted successfully (ID: {task_id})")
 
 
+def help():
+    print(HELP_TEXT)
+
+
 def main():
     if len(sys.argv) < 2:
         print("Usage: task-cli <command> [options]")
@@ -150,9 +166,11 @@ def main():
             delete(args)
         case cmd if cmd.startswith("mark"):
             mark([cmd, *args])
+        case "help":
+            help()
         case _:
             print(f"Unknown command: {command}")
-            print("Usage: task-cli <command> [options]")
+            help()
             sys.exit(1)
 
 

@@ -147,6 +147,13 @@ def test_list():
     assert "[todo] 2: Go to the gym" in result.stdout
 
 
+def test_help():
+    """Test the help command"""
+    result = run_cli(["help"])
+    assert result.returncode == 0
+    assert "Usage: task-cli <command> [options]" in result.stdout
+
+
 def main():
     pytest.main()
 
