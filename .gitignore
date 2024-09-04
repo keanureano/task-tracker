@@ -1,0 +1,44 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# C extensions
+*.so
+
+# Distribution / packaging
+*.egg-info/
+*.egg
+dist/
+build/
+*.tar.gz
+*.zip
+
+# Pytest cache
+.pytest_cache/
+
+# Virtual environment
+venv/
+ENV/
+env/
+.venv/
+
+# Database files
+*database.json
+
+# Logs
+*.log
+
+# Environment variables
+.env
+
+# IDE/editor-specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+
+# OS-specific files
+.DS_Store
+Thumbs.db
